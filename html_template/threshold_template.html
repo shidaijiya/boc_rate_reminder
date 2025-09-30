@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <title>{{currency_name}}{{price_label}}汇率已达阈值提醒 (beta)</title>
+  <meta name="x-apple-disable-message-reformatting">
+  <meta name="format-detection" content="telephone=no,address=no,email=no,date=no,url=no">
+  <!--[if mso]>
+    <style type="text/css">
+      body, table, td, p, a, span { font-family: Arial, Helvetica, sans-serif !important; }
+    </style>
+  <![endif]-->
+</head>
+<body style="margin:0; padding:0; background:#f7f8fa;">
+  <!-- 外层居中容器 -->
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:#f7f8fa;">
+    <tr>
+      <td align="center" style="padding:24px 12px;">
+        <!-- 卡片主体 -->
+        <table role="presentation" width="680" cellspacing="0" cellpadding="0" border="0" style="width:680px; max-width:680px; background:#ffffff; border:1px solid #e5e7eb;">
+          <!-- 标题 -->
+          <tr>
+            <td style="padding:24px 24px 8px 24px; color:#1f2937; font-family:Arial,Helvetica,sans-serif;">
+              <h1 style="margin:0; font-size:26px; line-height:1.25; font-weight:800; text-align:center;">
+                {{currency_name}}{{price_label}}汇率已达阈值提醒 (beta)
+              </h1>
+            </td>
+          </tr>
+
+          <!-- 说明文字 -->
+          <tr>
+            <td style="padding:0 24px 16px 24px; font-family:Arial,Helvetica,sans-serif; color:#6b7280; font-size:14px; line-height:1.6; text-align:center;">
+              尊敬的用户，您订阅的<strong style="color:#1f2937; font-weight:700;">{{currency_name}}{{price_label}}</strong>已达到您设置的阈值：<strong style="color:#1f2937; font-weight:700;">{{target_exchange_rate}}</strong>
+            </td>
+          </tr>
+
+          <!-- KPI 双列（使用表格，不用 grid） -->
+          <tr>
+            <td style="padding:0 24px 8px 24px;">
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+                <tr>
+                  <!-- 当前价格 -->
+                  <td valign="top" width="50%" style="padding:8px; ">
+                    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="border:1px solid #e5e7eb;">
+                      <tr>
+                        <td style="padding:8px 10px; font-family:Arial,Helvetica,sans-serif; font-size:12px; color:#6b7280;">📌 当前价格</td>
+                      </tr>
+                      <tr>
+                        <td style="padding:10px 12px; font-family:Arial,Helvetica,sans-serif; font-size:18px; font-weight:700; color:#1f2937;">
+                          {{current_price}}
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                  <!-- 触发时间 -->
+                  <td valign="top" width="50%" style="padding:8px;">
+                    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="border:1px solid #e5e7eb;">
+                      <tr>
+                        <td style="padding:8px 10px; font-family:Arial,Helvetica,sans-serif; font-size:12px; color:#6b7280;">⏰ 触发时间</td>
+                      </tr>
+                      <tr>
+                        <td style="padding:10px 12px; font-family:Arial,Helvetica,sans-serif; font-size:18px; font-weight:700; color:#1f2937;">
+                          {{trigger_time}}
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+
+                <tr>
+                  <!-- 本周涨跌 -->
+                  <td valign="top" width="50%" style="padding:8px;">
+                    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="border:1px solid #e5e7eb;">
+                      <tr>
+                        <td style="padding:8px 10px; font-family:Arial,Helvetica,sans-serif; font-size:12px; color:#6b7280;">🗓️ 本周涨跌</td>
+                      </tr>
+                      <tr>
+                        <td style="padding:10px 12px; font-family:Arial,Helvetica,sans-serif; font-size:18px; font-weight:700; color:#1f2937;">
+                          <!-- 正数请输出绿色，负数红色 -->
+                          <span style="color:#10b981;">{{week_growth}}</span>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                  <!-- 本月涨跌 -->
+                  <td valign="top" width="50%" style="padding:8px;">
+                    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="border:1px solid #e5e7eb;">
+                      <tr>
+                        <td style="padding:8px 10px; font-family:Arial,Helvetica,sans-serif; font-size:12px; color:#6b7280;">🗓️ 本月涨跌</td>
+                      </tr>
+                      <tr>
+                        <td style="padding:10px 12px; font-family:Arial,Helvetica,sans-serif; font-size:18px; font-weight:700; color:#1f2937;">
+                          <span style="color:#10b981;">{{month_growth}}</span>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+
+              </table>
+            </td>
+          </tr>
+
+          <!-- 致谢 + 最近触发 -->
+          <tr>
+            <td style="padding:8px 24px 6px 24px; font-family:Arial,Helvetica,sans-serif; color:#1f2937; font-size:14px; line-height:1.7;">
+              感谢您的关注，祝您生活愉快！
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:0 24px 16px 24px; font-family:Arial,Helvetica,sans-serif; color:#6b7280; font-size:14px; line-height:1.6;">
+              {{last_trigger}}
+            </td>
+          </tr>
+
+          <!-- 页脚 -->
+          <tr>
+            <td style="padding:20px 24px 28px 24px; border-top:1px solid #e5e7eb; text-align:center; font-family:Arial,Helvetica,sans-serif; color:#6b7280; font-size:13px; line-height:1.8;">
+              <div>&copy; 2025 <a href="https://example.com" style="color:#6b7280; text-decoration:none; border-bottom:1px dashed #9ca3af;">example.com</a> All Rights Reserved.</div>
+              <div>如需退订请发送邮件至 <a href="mailto:support@example.com" style="color:#6b7280; text-decoration:none; border-bottom:1px dashed #9ca3af;">support@example.com</a></div>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
