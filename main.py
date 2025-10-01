@@ -21,9 +21,15 @@ from lib.utils import conv_to_float
 
 load_dotenv()
 TIME_ZONE = os.getenv("TIME_ZONE")
+job_defaults = {
+    'coalesce': True,
+    'max_instances': 3,
+    'misfire_grace_time': 600
+}
+
 
 executor = ThreadPoolExecutor(max_workers=4)
-scheduler = BackgroundScheduler(timezone=ZoneInfo(TIME_ZONE))
+scheduler = BackgroundScheduler(timezone=ZoneInfo(TIME_ZONE), job_defaults=job_defaults)
 stop_event = Event()
 
 
@@ -316,33 +322,30 @@ def start_generate_chart(start_date, end_date):
 if __name__ == "__main__":
     scheduler.add_job(hour_task,
                       trigger='cron',
-                      minute=0,
-                      coalesce=True)
+                      minute=0)
 
     scheduler.add_job(process_daily_reminder,
                       trigger="cron",
                       hour=9,
-                      minute=30,
-                      coalesce=True)
+                      minute=30)
 
     scheduler.add_job(start_generate_chart,
                       args=[7, -1],
                       trigger='cron',
                       day_of_week='mon',
-                      coalesce=True)
+                      hour=0,
+                      minute=0)
 
     scheduler.add_job(start_generate_chart,
                       args=[30, 1],
                       trigger='cron',
-                      day=1,
-                      coalesce=True)
+                      day=1)
 
     scheduler.add_job(start_generate_chart,
                       args=[365, -1],
                       trigger='cron',
                       month=1,
-                      day=1,
-                      coalesce=True)
+                      day=1)
 
     scheduler.start()
 
