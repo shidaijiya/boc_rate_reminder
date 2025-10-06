@@ -112,6 +112,10 @@ boc_rate_reminder-release-version/
 ---
 
 ## 🗄️ 数据库设计
+### `rate_data`
+```sql
+CREATE DATABASE rate_data;
+```
 
 ### `exchange_rates`
 存储抓取到的汇率数据（多币种 + 时间序列）。
@@ -170,20 +174,26 @@ pip install -r requirements.txt
 
 ### 配置环境变量（`.env` 文件）
 ```ini
+# 时区设置
 TIME_ZONE=Asia/Shanghai
 
 # 数据库配置
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_USER=root
-DB_PASS=your_db_password
-DB_NAME=exchange_db
+DB_HOST=your_database_host        # 数据库主机地址（例如：localhost 或远程 IP）
+DB_PORT=3306                      # 数据库端口，MySQL 默认为 3306
+DB_USER=your_database_user        # 数据库用户名
+DB_PASSWD=your_database_password  # 数据库密码
 
-# 邮件服务配置
-SMTP_SERVER=smtp.example.com
-SMTP_PORT=465
-SMTP_USER=your_email@example.com
-SMTP_PASS=your_password
+# 代理设置
+PROXY_HOST=your_proxy_host        # 代理服务器主机地址
+PROXY_PORT=your_proxy_port        # 代理服务器端口
+DEFAULT_PROXY=true                # 是否启用代理（true/false）
+
+# 邮件服务器配置
+SMTP_SERVER=your_smtp_server      # SMTP 邮件服务器地址（例如：smtp.example.com）
+SMTP_PORT=465                     # SMTP 端口（465 通常用于 SSL）
+SENDER_EMAIL=your_sender_email    # 发件邮箱地址
+SENDER_PASSWD=your_email_password # 发件邮箱密码或授权码
+SENDER_NICKNAME=your_sender_name  # 发件人昵称或显示名称
 ```
 
 ---
