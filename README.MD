@@ -221,9 +221,15 @@ SMTP_PASS=your_password
 
 ### Docker 部署
 ```bash
+# 构建镜像（本地构建）
 docker build -t boc_rate_reminder .
 docker run -d --env-file .env boc_rate_reminder
+
+# 或者从 Docker Hub 拉取远程镜像
+docker pull shidaijiya/boc_rate_reminder:latest
+docker run -d --env-file .env shidaijiya/boc_rate_reminder:latest
 ```
+
 
 ---
 
