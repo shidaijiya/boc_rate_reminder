@@ -210,9 +210,14 @@ SENDER_NICKNAME=your_sender_name  # 发件人昵称或显示名称
 
 3. **构建并运行容器**：
    ```bash
-   docker build -t boc_rate_reminder .
-   docker run -d --env-file .env boc_rate_reminder
-   ```
+    # 构建镜像（本地构建）
+    docker build -t boc_rate_reminder .
+    docker run -d --env-file .env boc_rate_reminder
+
+    # 或者从 Docker Hub 拉取远程镜像
+    docker pull shidaijiya/boc_rate_reminder:latest
+    docker run -d --env-file .env shidaijiya/boc_rate_reminder:latest
+    ```
 
 4. **验证服务是否运行成功**  
    - 检查数据库 `exchange_rates` 是否有新数据。  
