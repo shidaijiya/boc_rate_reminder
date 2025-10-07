@@ -83,7 +83,7 @@ def generate_line_chart(currency_name, data):
 
 
     fig.update_layout(
-        title=f"{currency_name} to 人民币 {dates[0]}-{dates[-1]}",
+        title=f"From {currency_name} to 人民币{' '*10}From {dates[0]} to {dates[-1]}",
         xaxis_title="日期",
         yaxis_title="价格",
         xaxis=dict(tickformat="%Y-%m-%d")
