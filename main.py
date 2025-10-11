@@ -247,7 +247,7 @@ def process_daily_reminder():
         total_data = []
         for currency_name in currency_names:
             today_data = get_ccy_xchg_rate_by_date("curdate", "d", "desc", currency_name, 0, -1)
-            week_data = get_ccy_xchg_rate_by_date("curdate", "w", "desc", currency_name, 7, 6)
+            week_data = get_ccy_xchg_rate_by_date("curdate", "d", "desc", currency_name, 7, 6)
             month_data = get_ccy_xchg_rate_by_date("curdate", "d", "desc", currency_name, 30, 29)
 
             last_today_data = today_data[0] if today_data else None
@@ -330,19 +330,19 @@ if __name__ == "__main__":
                       minute=30)
 
     scheduler.add_job(start_generate_chart,
-                      args=[7, -1],
+                      args=[6, -1],
                       trigger='cron',
                       day_of_week='mon',
                       hour=0,
                       minute=0)
 
     scheduler.add_job(start_generate_chart,
-                      args=[30, 1],
+                      args=[29, 1],
                       trigger='cron',
                       day=1)
 
     scheduler.add_job(start_generate_chart,
-                      args=[365, -1],
+                      args=[364, -1],
                       trigger='cron',
                       month=1,
                       day=1)
