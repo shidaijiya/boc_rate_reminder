@@ -136,7 +136,7 @@ def process_threshold_reminder():
         uid = user_data[1]
         currency_name = user_data[2]
         target_exchange_rate = Decimal(user_data[3])
-        original_target_type = user_data[4]
+        target_type_str = user_data[4]
         last_triggered_at = user_data[5]
         trigger_count = user_data[6]
 
@@ -160,9 +160,9 @@ def process_threshold_reminder():
         last_exchange_rates = exchange_rates_data[0]
 
 
-        if original_target_type in sql_num_map:
-            target_type = sql_num_map[original_target_type]
-            if last_exchange_rates[target_type] <= target_exchange_rate:
+        if target_type_str in sql_num_map:
+            target_type_int = sql_num_map[target_type_str]
+            if last_exchange_rates[target_type_int] <= target_exchange_rate:
 
                 active = 1
                 last_trigger_txt = ""
@@ -176,14 +176,19 @@ def process_threshold_reminder():
                 tz = ZoneInfo(TIME_ZONE)
                 now = datetime.now(tz).strftime("%Y-%m-%d %H:%M")
 
-                week_growth_result, week_growth_rate = calculate_growth_rate(currency_name=currency_name, target_type=target_type, start_mode="curdate", interval_mode="d", start_date=7, end_date=0)
+                today_data = get_ccy_xchg_rate_by_date("curdate", "d", "desc", currency_name, 0, -1)
+                week_data = get_ccy_xchg_rate_by_date("curdate", "d", "desc", currency_name, 7, 6)
+                month_data = get_ccy_xchg_rate_by_date("curdate", "d", "desc", currency_name, 30, 29)
 
-                month_growth_result, month_growth_rate = calculate_growth_rate(currency_name=currency_name, target_type=target_type, start_mode="curdate", interval_mode="d", start_date=30, end_date=0)
+
+                week_growth_result, week_growth_rate = calculate_growth_rate(today_data[0][target_type_int], week_data[0][target_type_int])
+
+                month_growth_result, month_growth_rate = calculate_growth_rate(today_data[0][target_type_int], month_data[0][target_type_int])
 
                 threshold_template = replace_threshold_template(currency_name,
-                                                                price_labels[original_target_type],
+                                                                price_labels[target_type_str],
                                                                 target_exchange_rate,
-                                                                last_exchange_rates[target_type].normalize(),
+                                                                last_exchange_rates[target_type_int].normalize(),
                                                                 now, week_growth_rate,
                                                                 month_growth_rate,
                                                                 last_trigger_txt)
@@ -193,16 +198,7 @@ def process_threshold_reminder():
 
 
 
-def calculate_growth_rate(currency_name, target_type, start_mode, interval_mode, start_date, end_date):
-    # 从新到旧
-    growth_rates_data = get_ccy_xchg_rate_by_date(start_mode, interval_mode, "desc", currency_name, start_date, end_date)
-
-    log_print.debug(f"original growth_rates_data:{growth_rates_data}")
-    if len(growth_rates_data) < 2:
-        return False, "No data"
-
-    new_price = growth_rates_data[0][target_type]
-    original_price = growth_rates_data[-1][target_type]
+def calculate_growth_rate(new_price, original_price):
     log_print.debug(f"new_price:{new_price}, original_price:{original_price}")
 
     growth_rate = ((new_price - original_price) / original_price) * 100
@@ -254,25 +250,20 @@ def process_daily_reminder():
             last_week_data = week_data[0] if week_data else None
             last_month_data = month_data[0] if month_data else None
 
-            week_growth_result, week_growth_rate = calculate_growth_rate(currency_name=currency_name,
-                                                                         target_type=3, start_mode="curdate",
-                                                                         interval_mode="d", start_date=7, end_date=0)
+            week_growth_result, week_growth_rate = calculate_growth_rate(today_data[0][3], week_data[0][3])
 
-            month_growth_result, month_growth_rate = calculate_growth_rate(currency_name=currency_name,
-                                                                           target_type=3,
-                                                                           start_mode="curdate", interval_mode="d",
-                                                                           start_date=30, end_date=0)
+            month_growth_result, month_growth_rate = calculate_growth_rate(today_data[0][3], month_data[0][3])
 
-            tmp_list = []
-            tmp_list.append(extract_row(last_today_data,"Unavailable"))
-            tmp_list.append(extract_row(last_week_data, week_growth_rate))
-            tmp_list.append(extract_row(last_month_data, month_growth_rate))
+            tmp_list = [
+                extract_row(last_today_data, "Unavailable"),
+                extract_row(last_week_data, week_growth_rate),
+                extract_row(last_month_data, month_growth_rate),
+            ]
 
             total_data.append([currency_name,tmp_list])
 
         mail_html = str(generate_daily_html(total_data))
         executor.submit(send_mail(user_email, f"这是您订阅的汇率请查收📩", mail_html))
-
 
 
 
