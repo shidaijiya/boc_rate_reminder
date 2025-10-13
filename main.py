@@ -150,14 +150,14 @@ def process_threshold_reminder():
                 continue
 
 
-        exchange_rates_data = get_ccy_xchg_rate_by_date("curdate","d","desc",currency_name,0, -1)
+        today_data = get_ccy_xchg_rate_by_date("curdate","d","desc",currency_name,0, -1)
 
 
-        if not exchange_rates_data:
+        if not today_data:
             log_print.info("no exchange rate data")
             continue
 
-        last_exchange_rates = exchange_rates_data[0]
+        last_exchange_rates = today_data[0]
 
 
         if target_type_str in sql_num_map:
@@ -176,14 +176,14 @@ def process_threshold_reminder():
                 tz = ZoneInfo(TIME_ZONE)
                 now = datetime.now(tz).strftime("%Y-%m-%d %H:%M")
 
-                today_data = get_ccy_xchg_rate_by_date("curdate", "d", "desc", currency_name, 0, -1)
+
                 week_data = get_ccy_xchg_rate_by_date("curdate", "d", "desc", currency_name, 7, 6)
                 month_data = get_ccy_xchg_rate_by_date("curdate", "d", "desc", currency_name, 30, 29)
 
 
-                week_growth_result, week_growth_rate = calculate_growth_rate(today_data[0][target_type_int], week_data[0][target_type_int])
+                week_growth_result, week_growth_rate = calculate_growth_rate(last_exchange_rates[target_type_int], week_data[0][target_type_int])
 
-                month_growth_result, month_growth_rate = calculate_growth_rate(today_data[0][target_type_int], month_data[0][target_type_int])
+                month_growth_result, month_growth_rate = calculate_growth_rate(last_exchange_rates[target_type_int], month_data[0][target_type_int])
 
                 threshold_template = replace_threshold_template(currency_name,
                                                                 price_labels[target_type_str],
