@@ -180,10 +180,20 @@ def process_threshold_reminder():
                 week_data = get_ccy_xchg_rate_by_date("curdate", "d", "desc", currency_name, 7, 6)
                 month_data = get_ccy_xchg_rate_by_date("curdate", "d", "desc", currency_name, 30, 29)
 
+                if last_exchange_rates and week_data[0]:
+                    week_growth_result, week_growth_rate = calculate_growth_rate(last_exchange_rates[target_type_int],
+                                                                                 week_data[0][target_type_int])
+                else:
+                    week_growth_result = "Unavailable"
+                    week_growth_rate = "Unavailable"
 
-                week_growth_result, week_growth_rate = calculate_growth_rate(last_exchange_rates[target_type_int], week_data[0][target_type_int])
 
-                month_growth_result, month_growth_rate = calculate_growth_rate(last_exchange_rates[target_type_int], month_data[0][target_type_int])
+                if last_exchange_rates and month_data[0]:
+                    month_growth_result, month_growth_rate = calculate_growth_rate(last_exchange_rates[target_type_int], month_data[0][target_type_int])
+                else:
+                    month_growth_result = "Unavailable"
+                    month_growth_rate = "Unavailable"
+
 
                 threshold_template = replace_threshold_template(currency_name,
                                                                 price_labels[target_type_str],
@@ -194,7 +204,7 @@ def process_threshold_reminder():
                                                                 last_trigger_txt)
 
                 update_threshold_sub(uid, int(time.time()), trigger_count + 1, active)
-                executor.submit(send_mail(user_email, f"{currency_name}汇率已达阈值提醒",threshold_template))
+                executor.submit(send_mail, user_email, f"{currency_name}汇率已达阈值提醒", threshold_template)
 
 
 
@@ -250,9 +260,21 @@ def process_daily_reminder():
             last_week_data = week_data[0] if week_data else None
             last_month_data = month_data[0] if month_data else None
 
-            week_growth_result, week_growth_rate = calculate_growth_rate(today_data[0][3], week_data[0][3])
 
-            month_growth_result, month_growth_rate = calculate_growth_rate(today_data[0][3], month_data[0][3])
+            if last_today_data and last_week_data:
+                week_growth_result, week_growth_rate = calculate_growth_rate(last_today_data[3], week_data[0][3])
+            else:
+                week_growth_result = "Unavailable"
+                week_growth_rate = "Unavailable"
+
+
+            if last_today_data and last_month_data:
+                month_growth_result, month_growth_rate = calculate_growth_rate(last_today_data[0][3], month_data[0][3])
+            else:
+                month_growth_result = "Unavailable"
+                month_growth_rate = "Unavailable"
+
+
 
             tmp_list = [
                 extract_row(last_today_data, "Unavailable"),
@@ -263,7 +285,7 @@ def process_daily_reminder():
             total_data.append([currency_name,tmp_list])
 
         mail_html = str(generate_daily_html(total_data))
-        executor.submit(send_mail(user_email, f"这是您订阅的汇率请查收📩", mail_html))
+        executor.submit(send_mail, user_email, "这是您订阅的汇率请查收📩", mail_html)
 
 
 
